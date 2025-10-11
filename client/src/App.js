@@ -120,10 +120,7 @@ function App() {
     );
   }
 
-  // Temporary: Show test page first
-  if (process.env.NODE_ENV === 'production') {
-    return <TestPage />;
-  }
+  // Test page removed - full app restored
 
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
