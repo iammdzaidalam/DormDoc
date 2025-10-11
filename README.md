@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # College Dispensary Management System
 
 A comprehensive medical management system for Birla Institute of Technology, Mesra.
@@ -162,3 +163,7 @@ For support and questions, please contact the development team.
 
 **Birla Institute of Technology, Mesra**  
 *College Dispensary Management System*
+=======
+# DormDoc
+The College Dispensary Management System is a comprehensive web application designed to streamline the medical services provided to students and staff on a college campus. This system will integrate real-time data, AI-powered features, and automated workflows to enhance efficiency, improve patient care and provide valuable insightsfor administrator
+>>>>>>> b821688d81c0dce54c614895d60618f6b2e681a2

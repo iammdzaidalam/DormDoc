@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "🚀 GitHub Repository Setup Commands"
+echo "=================================="
+echo ""
+echo "After creating your GitHub repository, run these commands:"
+echo ""
+echo "# Add GitHub remote (replace YOUR_USERNAME with your GitHub username)"
+echo "git remote add origin https://github.com/YOUR_USERNAME/college-dispensary.git"
+echo ""
+echo "# Push to GitHub"
+echo "git branch -M main"
+echo "git push -u origin main"
+echo ""
+echo "Then proceed to Netlify deployment!"
