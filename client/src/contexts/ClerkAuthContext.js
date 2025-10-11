@@ -71,7 +71,7 @@ export const ClerkAuthProvider = ({ children }) => {
   const getUserQRCode = () => {
     // Generate QR code for Clerk user
     if (user) {
-      return {
+      const qrData = {
         id: user.id,
         name: user.fullName,
         email: user.primaryEmailAddress?.emailAddress,
@@ -82,7 +82,14 @@ export const ClerkAuthProvider = ({ children }) => {
         phone: user.publicMetadata?.phone,
         bloodGroup: user.publicMetadata?.bloodGroup,
         emergencyContact: user.publicMetadata?.emergencyContact,
+        timestamp: new Date().toISOString(),
+        type: 'user_id',
+        version: '1.0',
       };
+      
+      // Store in localStorage for compatibility
+      localStorage.setItem('userQRCode', JSON.stringify(qrData));
+      return qrData;
     }
     return null;
   };

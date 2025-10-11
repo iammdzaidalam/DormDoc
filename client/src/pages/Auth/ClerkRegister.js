@@ -1,7 +1,7 @@
 import React from 'react';
 import { SignUp } from '@clerk/clerk-react';
 import { Box, Container, Typography, Paper } from '@mui/material';
-import { BITEmblem } from '../../components/BITEmblem';
+import BITEmblem from '../../components/BITEmblem';
 
 const ClerkRegister = () => {
   return (

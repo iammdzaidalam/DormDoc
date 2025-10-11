@@ -61,7 +61,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useAuth } from '../../contexts/AuthContext';
+import { useClerkAuth } from '../../contexts/ClerkAuthContext';
 import UserQRCode from '../../components/UserQRCode';
 
 const Profile = () => {
@@ -71,7 +71,7 @@ const Profile = () => {
   const [qrCodeDataURL, setQrCodeDataURL] = useState('');
   const [qrCodeLoading, setQrCodeLoading] = useState(false);
   
-  const { user, getUserQRCode, regenerateQRCode } = useAuth();
+  const { user, getUserQRCode, regenerateQRCode } = useClerkAuth();
   
   const [profileData, setProfileData] = useState({
     name: '',

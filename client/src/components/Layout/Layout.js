@@ -37,7 +37,7 @@ import {
   Security,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useClerkAuth } from '../../contexts/ClerkAuthContext';
 import CollegeHeader from './CollegeHeader';
 import CollegeFooter from './CollegeFooter';
 
@@ -48,7 +48,7 @@ const Layout = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const [hideTimeout, setHideTimeout] = useState(null);
-  const { user, logout } = useAuth();
+  const { user, logout } = useClerkAuth();
   const navigate = useNavigate();
   const location = useLocation();
 

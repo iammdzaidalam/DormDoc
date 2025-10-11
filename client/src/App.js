@@ -1,13 +1,14 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { useAuth } from './contexts/AuthContext';
+import { ClerkAuthProvider } from './contexts/ClerkAuthContext';
 import Layout from './components/Layout/Layout';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
-import ForgotPassword from './pages/Auth/ForgotPassword';
+import ClerkLogin from './pages/Auth/ClerkLogin';
+import ClerkRegister from './pages/Auth/ClerkRegister';
 import StudentDashboard from './pages/Student/StudentDashboard';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Profile from './pages/Profile/Profile';
@@ -43,100 +44,88 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
-  const { user, loading } = useAuth();
+// Get Clerk publishable key
+const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
-  if (loading) {
+function App() {
+  if (!clerkPubKey) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
-        <div>Loading...</div>
-      </Box>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontFamily: 'Arial, sans-serif'
+      }}>
+        <div>
+          <h2>Missing Clerk Publishable Key</h2>
+          <p>Please set REACT_APP_CLERK_PUBLISHABLE_KEY in your environment variables.</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-      <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-      <Route path="/forgot-password" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
-      
-      {/* Protected Routes */}
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Routes>
-                {/* Student Routes */}
-                <Route
-                  path="/"
-                  element={
-                    user?.role === 'student' ? (
-                      <StudentDashboard />
-                    ) : user?.role === 'doctor' ? (
-                      <DoctorDashboard />
-                    ) : (
-                      <AdminDashboard />
-                    )
-                  }
-                />
-                
-                {/* Student-specific routes */}
-                {user?.role === 'student' && (
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <QueryClientProvider client={queryClient}>
+        <ClerkAuthProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<ClerkLogin />} />
+              <Route path="/register" element={<ClerkRegister />} />
+              
+              {/* Protected Routes */}
+              <Route
+                path="/*"
+                element={
                   <>
-                    <Route path="/appointments" element={<Appointments />} />
-                    <Route path="/book-appointment" element={<BookAppointment />} />
-                    <Route path="/emergency-sos" element={<EmergencySOS />} />
-                    <Route path="/ambulance-booking" element={<AmbulanceBooking />} />
-                    <Route path="/prescriptions" element={<PrescriptionManagement />} />
-                    <Route path="/leave-application" element={<LeaveApplication />} />
-                    <Route path="/chatbot" element={<Chatbot />} />
-                    <Route path="/profile" element={<Profile />} />
+                    <SignedIn>
+                      <Layout>
+                        <Routes>
+                          {/* Student Routes */}
+                          <Route index element={<StudentDashboard />} />
+                          <Route path="appointments" element={<Appointments />} />
+                          <Route path="book-appointment" element={<BookAppointment />} />
+                          <Route path="emergency-sos" element={<EmergencySOS />} />
+                          <Route path="ambulance-booking" element={<AmbulanceBooking />} />
+                          <Route path="prescriptions" element={<PrescriptionManagement />} />
+                          <Route path="leave-application" element={<LeaveApplication />} />
+                          <Route path="chatbot" element={<Chatbot />} />
+                          
+                          {/* Admin Routes */}
+                          <Route path="doctors" element={<DoctorManagement />} />
+                          <Route path="ambulances" element={<AmbulanceManagement />} />
+                          <Route path="queue" element={<QueueManagement />} />
+                          <Route path="analytics" element={<Analytics />} />
+                          <Route path="admin-prescriptions" element={<AdminPrescriptionManagement />} />
+                          <Route path="inventory" element={<InventoryManagement />} />
+                          <Route path="ambulance-tracking" element={<AmbulanceTracking />} />
+                          <Route path="leave-requests" element={<LeaveRequests />} />
+                          <Route path="qr-scanner" element={<QRScanner />} />
+                          <Route path="login-info" element={<LoginInfo />} />
+                          
+                          {/* Doctor Routes */}
+                          <Route path="doctor-dashboard" element={<DoctorDashboard />} />
+                          <Route path="patient-chat" element={<PatientChat />} />
+                          
+                          {/* Profile Route */}
+                          <Route path="profile" element={<Profile />} />
+                        </Routes>
+                      </Layout>
+                    </SignedIn>
+                    <SignedOut>
+                      <RedirectToSignIn />
+                    </SignedOut>
                   </>
-                )}
-                
-                {/* Admin-specific routes */}
-                {user?.role === 'admin' && (
-                  <>
-                    <Route path="/doctors" element={<DoctorManagement />} />
-                    <Route path="/ambulances" element={<AmbulanceManagement />} />
-                    <Route path="/queue" element={<QueueManagement />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/admin-prescriptions" element={<AdminPrescriptionManagement />} />
-                    <Route path="/inventory" element={<InventoryManagement />} />
-                    <Route path="/ambulance-tracking" element={<AmbulanceTracking />} />
-                    <Route path="/leave-requests" element={<LeaveRequests />} />
-                    <Route path="/qr-scanner" element={<QRScanner />} />
-                    <Route path="/login-info" element={<LoginInfo />} />
-                    <Route path="/profile" element={<Profile />} />
-                  </>
-                )}
-                
-                {/* Doctor-specific routes */}
-                {user?.role === 'doctor' && (
-                  <>
-                    <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
-                    <Route path="/patient-chat" element={<PatientChat />} />
-                    <Route path="/profile" element={<Profile />} />
-                  </>
-                )}
-                
-                {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
-    </QueryClientProvider>
+                }
+              />
+            </Routes>
+            <ToastContainer />
+          </Router>
+        </ClerkAuthProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }
 
