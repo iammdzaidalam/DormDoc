@@ -45,7 +45,12 @@ const queryClient = new QueryClient({
 });
 
 // Get Clerk publishable key
-const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
+const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY || 'pk_test_Zmx1ZW50LXN3YW4tNjYuY2xlcmsuYWNjb3VudHMuZGV2JA';
+
+// Debug environment variables
+console.log('Environment check:');
+console.log('REACT_APP_CLERK_PUBLISHABLE_KEY:', clerkPubKey);
+console.log('All env vars:', process.env);
 
 function App() {
   if (!clerkPubKey) {
@@ -55,11 +60,27 @@ function App() {
         justifyContent: 'center', 
         alignItems: 'center', 
         height: '100vh',
-        fontFamily: 'Arial, sans-serif'
+        fontFamily: 'Arial, sans-serif',
+        flexDirection: 'column',
+        gap: '20px'
       }}>
         <div>
           <h2>Missing Clerk Publishable Key</h2>
           <p>Please set REACT_APP_CLERK_PUBLISHABLE_KEY in your environment variables.</p>
+          <p>Current value: {clerkPubKey || 'undefined'}</p>
+          <p>Environment: {process.env.NODE_ENV}</p>
+        </div>
+        <div style={{ 
+          background: '#f5f5f5', 
+          padding: '20px', 
+          borderRadius: '8px',
+          fontFamily: 'monospace',
+          fontSize: '12px'
+        }}>
+          <h4>Debug Info:</h4>
+          <p>REACT_APP_CLERK_PUBLISHABLE_KEY: {process.env.REACT_APP_CLERK_PUBLISHABLE_KEY}</p>
+          <p>REACT_APP_API_URL: {process.env.REACT_APP_API_URL}</p>
+          <p>NODE_ENV: {process.env.NODE_ENV}</p>
         </div>
       </div>
     );

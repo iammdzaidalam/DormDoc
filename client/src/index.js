@@ -93,3 +93,4 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+console.log('Clerk Key:', process.env.REACT_APP_CLERK_PUBLISHABLE_KEY);
