@@ -8,7 +8,31 @@ const authenticateToken = async (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
     if (!token) {
+      if (process.env.NODE_ENV === 'development') {
+        req.user = {
+          _id: '64d2f8b5e2a2c41234567890',
+          name: 'Test Student',
+          role: 'student',
+          studentId: 'BIT123',
+          department: 'Computer Science',
+          bloodGroup: 'O+'
+        };
+        return next();
+      }
       return res.status(401).json({ message: 'Access token required' });
+    }
+
+    // Also bypass verification if it's a dev token
+    if (process.env.NODE_ENV === 'development' && token === 'dev_token') {
+        req.user = {
+          _id: '64d2f8b5e2a2c41234567890',
+          name: 'Test Student',
+          role: 'student',
+          studentId: 'BIT123',
+          department: 'Computer Science',
+          bloodGroup: 'O+'
+        };
+        return next();
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
